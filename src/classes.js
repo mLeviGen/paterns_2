@@ -1,6 +1,5 @@
 export class User {
-    #password; 
-
+    #password;
     constructor(name, email, password) {
         this.id = Math.random().toString(36).substring(2, 11);
         this.name = name;
@@ -8,61 +7,45 @@ export class User {
         this.#password = password;
         this.role = 'User';
     }
-
-    getInfo() {
-        return `ID: ${this.id}, Name: ${this.name}, Email: ${this.email}, Role: ${this.role}`;
-    }
-
-    checkPassword(input) {
-        return this.#password === input;
-    }
-
-    getRole() {
-        return this.role;
-    }
+    getInfo() { return `ID: ${this.id}, Name: ${this.name}, Role: ${this.role}`; }
+    checkPassword(input) { return this.#password === input; }
 }
 
 
-export class Admin extends User {
-    constructor(name, email, password) {
-        super(name, email, password); 
-        this.role = 'Admin';
+export class UserDataBase {
+    static #instance = null; 
+    #users = [];
+
+    constructor() {
+        if (UserDataBase.#instance) {
+            return UserDataBase.#instance; 
+        }
+        this.#load();
+        UserDataBase.#instance = this;
     }
 
-    deleteUser(user) {
-        console.log(`[Admin]: Користувач ${user.name} видалений.`);
+    static getInstance() {
+        if (!this.#instance) this.#instance = new UserDataBase();
+        return this.#instance;
     }
 
-    resetPassword(user, newPassword) {
-        console.log(`[Admin]: Пароль для ${user.name} скинуто.`);
-    }
-}
-
-
-export class Moderator extends User {
-    constructor(name, email, password) {
-        super(name, email, password);
-        this.role = 'Moderator';
+    createUser(user) {
+        this.#users.push(user);
+        this.#save();
     }
 
-    warnUser(user) {
-        console.log(`[Moderator]: Попередження для ${user.name}.`);
+    searchUser(name) {
+        return this.#users.filter(u => u.name.includes(name));
     }
 
-    muteUser(user, duration) {
-        console.log(`[Moderator]: ${user.name} заблокований на ${duration} хв.`);
-    }
-}
-
-
-export class SuperAdmin extends Admin {
-    constructor(name, email, password) {
-        super(name, email, password);
-        this.role = 'SuperAdmin';
+    deleteUser(id) {
+        this.#users = this.#users.filter(u => u.id !== id);
+        this.#save();
     }
 
-    createAdmin(name, email, password) {
-        console.log(`[SuperAdmin]: Створення нового адміна: ${name}.`);
-        return new Admin(name, email, password);
+    #save() { localStorage.setItem('db_users', JSON.stringify(this.#users)); }
+    #load() {
+        const data = localStorage.getItem('db_users');
+        this.#users = data ? JSON.parse(data) : [];
     }
 }
