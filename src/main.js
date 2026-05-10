@@ -1,37 +1,31 @@
-import { User, UserDataBase } from './classes.js';
+import { User, Admin, UserDataBase } from './classes.js';
 import { Order } from './order.js';
 
-const display = document.getElementById('output');
-display.innerHTML = ''; 
+document.body.innerHTML = '<pre id="output" style="background:#1e1e1e; color:#4fc1ff; padding:20px; font-family:monospace;"></pre>';
+const output = document.getElementById('output');
+const print = (text) => output.innerText += text + '\n';
 
-function print(text) {
-    display.innerText += text + '\n';
-}
+print("=== Результати Лабораторної №2 ===\n");
 
-// --- ТЕСТ SINGLETON ---
-print("--- Тест Singleton (Одинак) ---");
+// 1. Тест Singleton (Одинак) [cite: 145]
 const db1 = UserDataBase.getInstance();
 const db2 = new UserDataBase();
-print(`Чи db1 === db2? ${db1 === db2}`); 
+print(`Тест Singleton: Чи об'єкти однакові? ${db1 === db2}`); 
 
-// --- ТЕСТ API БАЗИ ДАНИХ ---
-print("\n--- Тест API бази даних ---");
-const newUser = new User("Дмитро", "dima@test.com", "pass123");
-db1.createUser(newUser);
-const found = db1.searchUser("Дмитро");
-print(`Знайдено користувача: ${found[0].name} (${found[0].email})`);
+// 2. Тест API бази даних
+const admin = new Admin("Олександр", "alex@dev.de", "pass123");
+db1.createUser(admin);
+print(`Користувача додано: ${admin.name} (Role: ${admin.role})`);
 
-// --- ТЕСТ РЕФАКТОРИНГУ ---
-print("\n--- Тест Рефакторингу (Order) ---");
+// 3. Тест рефакторингу Order
+print("\n--- Розрахунок замовлення (Рефакторинг) ---");
 const items = [
     { name: "Хліб", price: 20, type: "food" },
     { name: "Телефон", price: 5000, type: "electronics" }
 ];
-const myOrder = new Order(items, "Олександр");
 
-const total = myOrder.calculateTotal().toFixed(2);
-
-print(`Замовлення для: ${myOrder.customer}`);
+const order = new Order(items, admin.name);
+print(`Замовник: ${order.customer}`);
 items.forEach(item => print(`- ${item.name}: ${item.price} грн`));
 print(`---------------------------`);
-print(`ЗАГАЛЬНА СУМА: ${total} грн`);
+print(`ЗАГАЛЬНА СУМА: ${order.calculateTotal().toFixed(2)} грн`);
