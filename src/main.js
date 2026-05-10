@@ -1,7 +1,7 @@
 import { User, Admin, UserDataBase } from './classes.js';
 import { Order } from './order.js';
 
-document.body.innerHTML = '<pre id="output" style="background:#1e1e1e; color:#4fc1ff; padding:20px; font-family:monospace;"></pre>';
+document.body.innerHTML = '<pre id="output"></pre>';
 const output = document.getElementById('output');
 const print = (text) => output.innerText += text + '\n';
 
