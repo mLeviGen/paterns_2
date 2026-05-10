@@ -1,5 +1,5 @@
 export class User {
-    #password;
+    #password; 
     constructor(name, email, password) {
         this.id = Math.random().toString(36).substring(2, 11);
         this.name = name;
@@ -12,14 +12,36 @@ export class User {
 }
 
 
+export class Admin extends User {
+    constructor(name, email, password) {
+        super(name, email, password); 
+        this.role = 'Admin';
+    }
+}
+
+
+export class Moderator extends User {
+    constructor(name, email, password) {
+        super(name, email, password);
+        this.role = 'Moderator';
+    }
+}
+
+
+export class SuperAdmin extends Admin {
+    constructor(name, email, password) {
+        super(name, email, password);
+        this.role = 'SuperAdmin';
+    }
+}
+
+
 export class UserDataBase {
     static #instance = null; 
     #users = [];
 
     constructor() {
-        if (UserDataBase.#instance) {
-            return UserDataBase.#instance; 
-        }
+        if (UserDataBase.#instance) return UserDataBase.#instance; 
         this.#load();
         UserDataBase.#instance = this;
     }
@@ -36,11 +58,6 @@ export class UserDataBase {
 
     searchUser(name) {
         return this.#users.filter(u => u.name.includes(name));
-    }
-
-    deleteUser(id) {
-        this.#users = this.#users.filter(u => u.id !== id);
-        this.#save();
     }
 
     #save() { localStorage.setItem('db_users', JSON.stringify(this.#users)); }
