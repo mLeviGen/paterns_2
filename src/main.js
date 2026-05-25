@@ -7,17 +7,14 @@ const print = (text) => output.innerText += text + '\n';
 
 print("=== Результати Лабораторної №2 ===\n");
 
-// 1. Тест Singleton (Одинак) [cite: 145]
 const db1 = UserDataBase.getInstance();
 const db2 = new UserDataBase();
 print(`Тест Singleton: Чи об'єкти однакові? ${db1 === db2}`); 
 
-// 2. Тест API бази даних
 const admin = new Admin("Олександр", "alex@dev.de", "pass123");
 db1.createUser(admin);
 print(`Користувача додано: ${admin.name} (Role: ${admin.role})`);
 
-// 3. Тест рефакторингу Order
 print("\n--- Розрахунок замовлення (Рефакторинг) ---");
 const items = [
     { name: "Хліб", price: 20, type: "food" },
