@@ -1,28 +1,41 @@
-import { User, Admin, UserDataBase } from './classes.js';
+import { User, UserDataBase } from './classes.js';
 import { Order } from './order.js';
 
-document.body.innerHTML = '<pre id="output"></pre>';
 const output = document.getElementById('output');
-const print = (text) => output.innerText += text + '\n';
+output.innerHTML = '';
+const print = (t) => output.innerText += t + '\n';
 
-print("=== Результати Лабораторної №2 ===\n");
-
+print("=== Тест Singleton ===");
 const db1 = UserDataBase.getInstance();
 const db2 = new UserDataBase();
-print(`Тест Singleton: Чи об'єкти однакові? ${db1 === db2}`); 
+print(`db1 === db2? ${db1 === db2}`);
 
-const admin = new Admin("Олександр", "alex@dev.de", "pass123");
-db1.createUser(admin);
-print(`Користувача додано: ${admin.name} (Role: ${admin.role})`);
+print("\n=== Тест API базы данных ===");
+const u1 = new User("Олександр", "root@dev.ua", "pass1");
+const u2 = new User("Дмитро", "dima@test.com", "pass2");
+const u3 = new User("Олена", "olena@test.com", "pass3");
 
-print("\n--- Розрахунок замовлення (Рефакторинг) ---");
+db1.createUser(u1);
+db1.createUser(u2);
+db1.createUser(u3);
+
+print("\nПошук за ім'ям 'Дмитро':");
+const found = db1.searchUser("Дмитро");
+found.forEach(u => print(`  → ${u.getInfo()}`));
+
+print("\nВидалення користувача (Дмитро):");
+const isDeleted = db1.deleteUser(u2.id);
+print(`  ${isDeleted ? 'Успішно видалений' : 'Не знайдено'}`);
+print(`  Лишилось в базі: ${db1.searchUser('').length}`);
+
+print("\nВидалення користувачів з 'О':");
+db1.deleteAllUsers("О");
+print(`  Осталось в базе: ${db1.searchUser('').length}`);
+
+print("\n=== Тест Рефакторинга ===");
 const items = [
     { name: "Хліб", price: 20, type: "food" },
     { name: "Телефон", price: 5000, type: "electronics" }
 ];
-
-const order = new Order(items, admin.name);
-print(`Замовник: ${order.customer}`);
-items.forEach(item => print(`- ${item.name}: ${item.price} грн`));
-print(`---------------------------`);
-print(`ЗАГАЛЬНА СУМА: ${order.calculateTotal().toFixed(2)} грн`);
+const myOrder = new Order(items, "Олександр");
+print(`Повна сума: ${myOrder.calculateTotal().toFixed(2)} грн`);
