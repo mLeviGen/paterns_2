@@ -1,8 +1,6 @@
 import { User, UserDataBase } from './classes.js';
 import { Order } from './order.js';
 
-const output = document.getElementById('output');
-output.innerHTML = '';
 const print = (t) => console.log(t);
 
 print("=== Тест Singleton ===");
@@ -25,8 +23,8 @@ found.forEach(u => print(`  → ${u.getInfo()}`));
 
 print("\nВидалення користувача (Дмитро):");
 const isDeleted = db1.deleteUser(u2.id);
-print(`  ${isDeleted ? 'Успішно видалений' : 'Не знайдено'}`);
-print(`  Лишилось в базі: ${db1.searchUser('').length}`);
+print(` ${isDeleted ? 'Успішно видалений' : 'Не знайдено'}`);
+print(` Лишилось в базі: ${db1.searchUser('').length}`);
 
 print("\nВидалення користувачів з 'О':");
 db1.deleteAllUsers("О");
