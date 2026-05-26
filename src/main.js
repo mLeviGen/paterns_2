@@ -3,7 +3,7 @@ import { Order } from './order.js';
 
 const output = document.getElementById('output');
 output.innerHTML = '';
-const print = (t) => output.innerText += t + '\n';
+const print = (t) => console.log(t);
 
 print("=== Тест Singleton ===");
 const db1 = UserDataBase.getInstance();
